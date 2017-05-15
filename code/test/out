@@ -1,0 +1,45 @@
+/usr/local/nachos/bin/decstation-ultrix-ld -T script -N start.o  add.o -o add.coff
+/usr/local/nachos/bin/decstation-ultrix-strip add.coff
+../../coff2noff/coff2noff add.coff add.noff
+numsections 3 
+Loading 3 sections:
+	".text", filepos 0xd0, mempos 0x0, size 0x1c0
+	".data", filepos 0x290, mempos 0x200, size 0x0
+	".bss", filepos 0x0, mempos 0x200, size 0x0
+/usr/local/nachos/bin/decstation-ultrix-gcc -G 0 -O3 -ggdb -c -I../userprog -I../lib -c halt.c -o halt.o
+/usr/local/nachos/bin/decstation-ultrix-ld -T script -N start.o  halt.o -o halt.coff
+/usr/local/nachos/bin/decstation-ultrix-strip halt.coff
+../../coff2noff/coff2noff halt.coff halt.noff
+numsections 3 
+Loading 3 sections:
+	".text", filepos 0xd0, mempos 0x0, size 0x1b0
+	".data", filepos 0x280, mempos 0x200, size 0x0
+	".bss", filepos 0x0, mempos 0x200, size 0x0
+/usr/local/nachos/bin/decstation-ultrix-gcc -G 0 -O3 -ggdb -c -I../userprog -I../lib -c matmult.c -o matmult.o
+/usr/local/nachos/bin/decstation-ultrix-ld -T script -N start.o  matmult.o -o matmult.coff
+/usr/local/nachos/bin/decstation-ultrix-strip matmult.coff
+../../coff2noff/coff2noff matmult.coff matmult.noff
+numsections 3 
+Loading 3 sections:
+	".text", filepos 0xd0, mempos 0x0, size 0x2b0
+	".data", filepos 0x380, mempos 0x300, size 0x0
+	".bss", filepos 0x0, mempos 0x300, size 0x12c0
+/usr/local/nachos/bin/decstation-ultrix-gcc -G 0 -O3 -ggdb -c -I../userprog -I../lib -c shell.c -o shell.o
+/usr/local/nachos/bin/decstation-ultrix-ld -T script -N start.o  shell.o -o shell.coff
+/usr/local/nachos/bin/decstation-ultrix-strip shell.coff
+../../coff2noff/coff2noff shell.coff shell.noff
+numsections 3 
+Loading 3 sections:
+	".text", filepos 0xd0, mempos 0x0, size 0x210
+	".data", filepos 0x2e0, mempos 0x280, size 0x0
+	".bss", filepos 0x0, mempos 0x280, size 0x0
+/usr/local/nachos/bin/decstation-ultrix-gcc -G 0 -O3 -ggdb -c -I../userprog -I../lib -c sort.c -o sort.o
+/usr/local/nachos/bin/decstation-ultrix-ld -T script -N start.o  sort.o -o sort.coff
+/usr/local/nachos/bin/decstation-ultrix-strip sort.coff
+../../coff2noff/coff2noff sort.coff sort.noff
+numsections 3 
+Loading 3 sections:
+	".text", filepos 0xd0, mempos 0x0, size 0x270
+	".data", filepos 0x340, mempos 0x280, size 0x0
+	".bss", filepos 0x0, mempos 0x280, size 0x1000
+rm matmult.coff sort.o add.coff shell.o halt.coff shell.coff matmult.o sort.coff halt.o
