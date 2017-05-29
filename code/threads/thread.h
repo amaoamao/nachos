@@ -52,6 +52,7 @@
 // For simplicity, I just take the maximum over all architectures.
 
 #define MachineStateSize 75 
+#define threadMaxNum 128
 
 
 // Size of the thread's private execution stack.
@@ -82,7 +83,8 @@ class Thread {
     void *machineState[MachineStateSize];  // all registers except for stackTop
 
   public:
-    Thread(char* debugName);		// initialize a Thread 
+    Thread(char* debugName);		// initialize a Thread
+    Thread(char* threadName,int initPriority); 
     ~Thread(); 				// deallocate a Thread
 					// NOTE -- thread being deleted
 					// must not be running when delete 
@@ -104,6 +106,8 @@ class Thread {
     char* getName() { return (name); }
     void Print() { cout << name; }
     void SelfTest();		// test whether thread impl is working
+    void SelfNumberTest();
+    void SelfPriorityTest();
 
   private:
     // some of the private data for this class is listed above
@@ -129,6 +133,8 @@ class Thread {
     void RestoreUserState();		// restore user-level register state
 
     AddrSpace *space;			// User code this thread is running.
+    int threadID;
+    int priority;
 };
 
 // external function, dummy routine whose sole job is to call Thread::Print

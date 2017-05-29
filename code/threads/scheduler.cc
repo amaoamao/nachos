@@ -79,9 +79,42 @@ Scheduler::FindNextToRun ()
     if (readyList->IsEmpty()) {
 	return NULL;
     } else {
-    	return readyList->RemoveFront();
+        ListIterator<Thread *>* listIterator = new ListIterator<Thread *>(readyList);
+        Thread* threadToBeRun;
+        threadToBeRun=listIterator->Item();
+        for(;!listIterator->IsDone();listIterator->Next())
+        {
+          if(threadToBeRun->priority > listIterator->Item()->priority)
+          {
+            threadToBeRun=listIterator->Item();
+          }
+         }
+        readyList->Remove(threadToBeRun);
+    	return threadToBeRun;
     }
 }
+
+bool Scheduler::IsEmpty(){
+  return readyList==NULL;
+}
+
+char* Scheduler::GetName(){
+  if(readyList->IsEmpty()){
+    return NULL;
+   }else{
+      ListIterator<Thread *>* listIterator;
+      listIterator=new ListIterator<Thread *>(readyList);
+      Thread *tempThread;
+      tempThread=listIterator->Item();
+      for(;!listIterator->IsDone();listIterator->Next()){
+        if(tempThread->priority > listIterator->Item()->priority)
+          tempThread=listIterator->Item();
+      }
+      return tempThread->getName();
+    }
+}
+
+
 
 //----------------------------------------------------------------------
 // Scheduler::Run

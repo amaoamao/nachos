@@ -43,7 +43,12 @@ Kernel::Kernel(int argc, char **argv)
 					// number generator
 	    randomSlice = TRUE;
 	    i++;
-        } else if (strcmp(argv[i], "-s") == 0) {
+        }else if(strcmp(argv[i], "-threadNumberTest") == 0){
+            threadTestFlag=true;
+        }else if(strcmp(argv[i], "-threadPriorityTest") == 0){
+            priorityTestFlag=true;
+        } 
+        else if (strcmp(argv[i], "-s") == 0) {
             debugUserProg = TRUE;
 	} else if (strcmp(argv[i], "-ci") == 0) {
 	    ASSERT(i + 1 < argc);
@@ -110,6 +115,14 @@ Kernel::Initialize()
     postOfficeOut = new PostOfficeOutput(reliability);
 
     interrupt->Enable();
+    if(threadTestFlag)
+    {
+       ThreadNumberTest();
+    }
+    if(priorityTestFlag)
+    {
+       ThreadPriorityTest();
+    }
 }
 
 //----------------------------------------------------------------------
@@ -159,6 +172,14 @@ Kernel::ThreadSelfTest() {
    synchList->SelfTest(9);
    delete synchList;
 
+}
+void
+Kernel::ThreadNumberTest(){
+  currentThread->SelfNumberTest();
+}
+void
+Kernel::ThreadPriorityTest(){
+  currentThread->SelfPriorityTest();
 }
 
 //----------------------------------------------------------------------

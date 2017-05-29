@@ -32,21 +32,59 @@ const int STACK_FENCEPOST = 0xdedbeef;
 //
 //	"threadName" is an arbitrary string, useful for debugging.
 //----------------------------------------------------------------------
+Semaphore* ThreadNum=new Semaphore("threadNumber",0);
+int tempForID=0;
+extern int numberOfThread=0;
 
 Thread::Thread(char* threadName)
 {
+    if(numberOfThread>=threadMaxNum)
+    {
+      ThreadNum->P();
+    }
+    numberOfThread++;
+    tempForID++;
+    threadID=tempForID;
+    priority=threadID;   
     name = threadName;
+    cout<<"--"<<threadName<<"--has been created\n"<<threadID<<"threads has been created\n"<<endl;
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
     for (int i = 0; i < MachineStateSize; i++) {
-	machineState[i] = NULL;		// not strictly necessary, since
-					// new thread ignores contents 
-					// of machine registers
-    }
-    space = NULL;
+      	machineState[i] = NULL;		// not strictly necessary, since	             				// new thread ignores contents 
+		         		// of machine registers
+     }    
+     space = NULL;      
+     if(strcmp(threadName,"postal worker")==0){
+       priority=100;
+     }
 }
 
+Thread::Thread(char* threadName,int initPriority)
+{
+    if(numberOfThread>=threadMaxNum)
+    {
+      ThreadNum->P();
+    }
+    numberOfThread++;
+    tempForID++;
+    threadID=tempForID;
+    priority=initPriority;
+    name = threadName;
+    cout<<"--"<<threadName<<"--has been created\n";
+    cout<<"The priority is"<<priority<<"\n";
+    cout<<threadID<<"threads has been created\n"<<endl;
+    stackTop = NULL;
+    stack = NULL;
+    status = JUST_CREATED;
+    for (int i = 0; i < MachineStateSize; i++) {
+        machineState[i] = NULL;         // not strictly necessary, since
+                                        // new thread ignores contents
+                                        // of machine registers
+     }
+     space = NULL;
+}
 //----------------------------------------------------------------------
 // Thread::~Thread
 // 	De-allocate a thread.
@@ -66,6 +104,10 @@ Thread::~Thread()
     ASSERT(this != kernel->currentThread);
     if (stack != NULL)
 	DeallocBoundedArray((char *) stack, StackSize * sizeof(int));
+    cout<<"\nThe thread with ID of "<<threadID<<"has been destroyed\n"<<endl;
+    numberOfThread--;
+    if(numberOfThread==(threadMaxNum-1))
+        ThreadNum->V();
 }
 
 //----------------------------------------------------------------------
@@ -404,7 +446,7 @@ Thread::RestoreUserState()
 //	"which" is simply a number identifying the thread, for debugging
 //	purposes.
 //----------------------------------------------------------------------
-
+Thread *tempThread;
 static void
 SimpleThread(int which)
 {
@@ -412,8 +454,20 @@ SimpleThread(int which)
     
     for (num = 0; num < 5; num++) {
 	cout << "*** thread " << which << " looped " << num << " times\n";
-        kernel->currentThread->Yield();
+        //kernel->currentThread->Yield();
     }
+}
+
+static void
+SimpleThread1(int which)
+{
+    /*int num;
+                                                                                
+    for (num = 0; num < 5; num++) {
+        cout << "*** thread " << which << " looped " << num << " times\n";
+        //kernel->currentThread->Yield();
+    }*/
+    delete tempThread;
 }
 
 //----------------------------------------------------------------------
@@ -433,4 +487,40 @@ Thread::SelfTest()
     kernel->currentThread->Yield();
     SimpleThread(0);
 }
+
+void
+Thread::SelfNumberTest()
+{
+    DEBUG(dbgThread, "Entering Thread::SelfNumberTest");
+                                                                                
+    Thread *t = new Thread("forked thread");
+                                                                                
+    t->Fork((VoidFunctionPtr) SimpleThread, (void *) 1);
+    int number;
+    for(number=0;number<126;number++){
+      Thread* testThread=new Thread("test");
+      tempThread=testThread;
+    }
+}
+
+void
+Thread::SelfPriorityTest()
+{
+    cout<<"Priority Test begin"<<endl;
+    DEBUG(dbgThread, "Entering Thread::SelfTest");
+                                                                                
+    Thread *t1 = new Thread("t1",10);
+    t1->Fork((VoidFunctionPtr) SimpleThread, (void *) 1);
+    Thread *t2 = new Thread("t2",0);
+    t2->Fork((VoidFunctionPtr) SimpleThread, (void *) 2);
+    while(!kernel->scheduler->IsEmpty()){
+      if(strcmp(kernel->scheduler->GetName(),"postal worker")!=0)
+      {
+        kernel->currentThread->Yield();
+      }else
+        break;
+    }
+    cout<<"Priority Test has over!"<<endl;
+}
+
 

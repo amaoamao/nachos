@@ -201,7 +201,11 @@ main(int argc, char **argv)
 	    ASSERT(i + 1 < argc);   // next argument is debug string
             debugArg = argv[i + 1];
 	    i++;
-	}
+	}else if(strcmp(argv[i],"-threadNumberTest")==0){
+        
+        }else if(strcmp(argv[i],"-threadPriorityTest")==0){
+         
+        }
 	else if (strcmp(argv[i], "-z") == 0) {
             cout << copyright << "\n";
 	}
@@ -209,7 +213,7 @@ main(int argc, char **argv)
 	    ASSERT(i + 1 < argc);
 	    userProgName = argv[i + 1];
 	    i++;
-	}
+}
 	else if (strcmp(argv[i], "-K") == 0) {
 	    threadTestFlag = TRUE;
 	}
